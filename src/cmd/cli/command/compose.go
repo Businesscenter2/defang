@@ -373,6 +373,7 @@ func makeComposeLogsCmd() *cobra.Command {
 			var raw, _ = cmd.Flags().GetBool("raw")
 			var since, _ = cmd.Flags().GetString("since")
 			var utc, _ = cmd.Flags().GetBool("utc")
+			var logTypeFlagValue, _ = cmd.Flags().GetString("type")
 
 			if utc {
 				os.Setenv("TZ", "") // used by Go's "time" package, see https://pkg.go.dev/time#Location
@@ -393,12 +394,21 @@ func makeComposeLogsCmd() *cobra.Command {
 			if len(name) > 0 {
 				services = strings.Split(name, ",")
 			}
+
+			logTypeFlagValue = strings.ToUpper(logTypeFlagValue)
+			if logTypeFlagValue != "" && logTypeFlagValue != "ALL" && logTypeFlagValue != "RUN" && logTypeFlagValue != "BUILD" {
+				return fmt.Errorf("invalid log type: %s", logTypeFlagValue)
+			}
+
+			logType := defangv1.LogType(defangv1.LogType_value[logTypeFlagValue])
+
 			tailOptions := cli.TailOptions{
 				Services: services,
 				Etag:     etag,
 				Since:    ts,
 				Raw:      raw,
 				Verbose:  true, // always verbose for explicit tail command
+				LogType:  logType,
 			}
 
 			loader := configureLoader(cmd)
@@ -414,6 +424,8 @@ func makeComposeLogsCmd() *cobra.Command {
 	logsCmd.Flags().BoolP("raw", "r", false, "show raw (unparsed) logs")
 	logsCmd.Flags().StringP("since", "S", "", "show logs since duration/time")
 	logsCmd.Flags().Bool("utc", false, "show logs in UTC timezone (ie. TZ=UTC)")
+	logsCmd.Flags().String("type", "ALL", "show logs of type: [ALL RUN BUILD]")
+	logsCmd.Flags().MarkHidden("type")
 	return logsCmd
 }
 
