@@ -337,6 +337,7 @@ message TailRequest {
   string etag = 3;
   string project = 4;
   LogType type = 5;
+  string pattern = 6;
 }
 
 message LogEntry {
