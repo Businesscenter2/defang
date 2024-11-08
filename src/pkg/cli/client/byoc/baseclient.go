@@ -66,7 +66,7 @@ type ByocBaseClient struct {
 	ShouldDelegateSubdomain bool
 	TenantID                string
 
-	project         *composeTypes.Project
+	project         *composeTypes.Project // nolint:unused
 	bootstrapLister BootstrapLister
 }
 
