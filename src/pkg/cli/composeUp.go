@@ -78,6 +78,9 @@ func ComposeUp(ctx context.Context, loader client.Loader, c client.FabricClient,
 	var resp *defangv1.DeployResponse
 	if upload == compose.UploadModePreview {
 		resp, err = p.Preview(ctx, deployRequest)
+		if err != nil {
+			return nil, project, err
+		}
 	} else {
 		req := client.PrepareDomainDelegationRequest{Project: project.Name, DelegateDomain: delegateDomain.Zone}
 		delegation, err := p.PrepareDomainDelegation(ctx, req)
@@ -93,9 +96,9 @@ func ComposeUp(ctx context.Context, loader client.Loader, c client.FabricClient,
 			deployRequest.DelegationSetId = delegation.DelegationSetId
 		}
 		resp, err = p.Deploy(ctx, deployRequest)
-	}
-	if err != nil {
-		return nil, project, err
+		if err != nil {
+			return nil, project, err
+		}
 	}
 
 	if term.DoDebug() {
