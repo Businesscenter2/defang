@@ -50,6 +50,10 @@ func (g *PlaygroundProvider) ListConfig(ctx context.Context, req *defangv1.ListC
 	return getMsg(g.client.ListSecrets(ctx, connect.NewRequest(req)))
 }
 
+func (g *PlaygroundProvider) ListDeployments(ctx context.Context, req *defangv1.ListDeploymentsRequest) (*defangv1.ListDeploymentsResponse, error) {
+	return getMsg(g.client.ListDeployments(ctx, connect.NewRequest(req)))
+}
+
 func (g *PlaygroundProvider) CreateUploadURL(ctx context.Context, req *defangv1.UploadURLRequest) (*defangv1.UploadURLResponse, error) {
 	return getMsg(g.client.CreateUploadURL(ctx, connect.NewRequest(req)))
 }

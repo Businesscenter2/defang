@@ -382,6 +382,12 @@ func (b *ByocDo) ListConfig(ctx context.Context, req *defangv1.ListConfigsReques
 	return secrets, nil
 }
 
+func (b *ByocDo) ListDeployments(ctx context.Context, req *defangv1.ListDeploymentsRequest) (*defangv1.ListDeploymentsResponse, error) {
+	deployments := &defangv1.ListDeploymentsResponse{}
+
+	return deployments, nil
+}
+
 func (b *ByocDo) PutConfig(ctx context.Context, config *defangv1.PutConfigRequest) error {
 	// redeploy app with updated config in pulumi "regular deployment"
 	app, err := b.getAppByName(ctx, config.Project)

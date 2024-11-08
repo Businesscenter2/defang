@@ -594,6 +594,11 @@ func (b *ByocAws) ListConfig(ctx context.Context, req *defangv1.ListConfigsReque
 	return &defangv1.Secrets{Names: configs}, nil
 }
 
+func (b *ByocAws) ListDeployments(ctx context.Context, req *defangv1.ListDeploymentsRequest) (*defangv1.ListDeploymentsResponse, error) {
+	deployments := &defangv1.ListDeploymentsResponse{}
+	return deployments, nil
+}
+
 func (b *ByocAws) CreateUploadURL(ctx context.Context, req *defangv1.UploadURLRequest) (*defangv1.UploadURLResponse, error) {
 	if _, err := b.setUpCD(ctx, req.Project); err != nil {
 		return nil, err

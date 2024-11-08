@@ -81,6 +81,11 @@ service FabricController {
     option idempotency_level = NO_SIDE_EFFECTS;
   }; // no values
 
+  rpc PutDeploymentStatus(PutDeploymentStatusRequest) returns (google.protobuf.Empty);
+  rpc ListDeployments(ListDeploymentsRequest) returns (ListDeploymentsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }; // no values
+
   rpc CreateUploadURL(UploadURLRequest) returns (UploadURLResponse);
 
   rpc DelegateSubdomainZone(DelegateSubdomainZoneRequest)
@@ -198,7 +203,7 @@ message StartGenerateResponse { string uuid = 1; }
 
 message GenerateStatusRequest { string uuid = 1; }
 
-message UploadURLRequest { 
+message UploadURLRequest {
   string digest = 1;
   string project = 2;
 }
@@ -298,6 +303,30 @@ message ListConfigsRequest {
 
 message ListConfigsResponse { repeated ConfigKey configs = 1; }
 
+enum DeploymentState {
+  DEPLOYMENT_STATE_UNKNOWN = 0;
+  DEPLOYMENT_STATE_STARTED = 1;
+  DEPLOYMENT_STATE_COMPLETED = 2;
+  DEPLOYMENT_STATE_FAILED = 3;
+}
+
+message PutDeploymentStatusRequest {
+  string tenant = 1;
+  string project = 2;
+  string provider = 3;
+  string provider_account_id = 4;
+  DeploymentState state = 5;
+  string timestamp = 6;
+}
+
+message ListDeploymentsRequest {
+  string project = 1; // defaults to tenant ID
+}
+
+message ListDeploymentsResponse {
+  string project = 1;
+}
+
 message TokenRequest {
   string tenant = 1;
   string auth_code = 2;      // from GitHub authorization code flow
@@ -369,8 +398,8 @@ enum Platform {
   LINUX_ANY = 2;
 }
 
-message ServiceID { 
-  string name = 1; 
+message ServiceID {
+  string name = 1;
   string project = 2;
 }
 
