@@ -19,9 +19,8 @@ func TestParseLogType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := ParseLogType(tt.value)
-			if (err != nil) != tt.wantErr {
+			if err != nil && !tt.wantErr {
 				t.Errorf("ParseLogType() error = %v, wantErr %v", err, tt.wantErr)
-				return
 			}
 			if got != tt.want {
 				t.Errorf("ParseLogType() = %v, want %v", got, tt.want)
@@ -86,7 +85,8 @@ func TestLogTypeSet(t *testing.T) {
 				t.Errorf("ParseLogType() error = %v", err)
 				return
 			}
-			if err := logType.Set(tt.value); (err != nil) != tt.wantErr {
+			err = logType.Set(tt.value)
+			if err != nil && !tt.wantErr {
 				t.Errorf("LogType.Set() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

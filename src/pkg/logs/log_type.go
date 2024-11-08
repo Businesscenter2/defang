@@ -45,23 +45,36 @@ var (
 
 func (c *LogType) Set(value string) error {
 	value = strings.TrimSpace(strings.ToUpper(value))
+
+	if value == "" {
+		*c = LogTypeUnspecified
+		return nil
+	}
+
 	if value == "ALL" {
 		*c = LogTypeAll
 		return nil
 	}
 
-	for _, logType := range AllLogTypes {
-		if logType.String() == value {
-			*c |= logType
-			return nil
+	parts := strings.Split(value, ",")
+	for _, part := range parts {
+		logType, ok := LogType_value[part]
+		if !ok {
+			return InvalidLogTypeError{Value: value}
 		}
+
+		*c |= logType
 	}
 
-	return InvalidLogTypeError{Value: value}
+	return nil
 }
 
 func (c LogType) Has(logType LogType) bool {
 	return c&logType != 0
+}
+
+func (c LogType) Type() string {
+	return "log-type"
 }
 
 func (c LogType) Value() string {
@@ -70,19 +83,8 @@ func (c LogType) Value() string {
 
 func ParseLogType(value string) (LogType, error) {
 	var logType LogType
-	if value == "" {
-		return logType, nil
-	}
-
-	parts := strings.Split(value, ",")
-	for _, part := range parts {
-		if err := logType.Set(part); err != nil {
-			return 0, err
-		}
-		logType |= logType
-	}
-
-	return logType, nil
+	err := logType.Set(value)
+	return logType, err
 }
 
 func (c LogType) String() string {
