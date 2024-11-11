@@ -1,0 +1,2 @@
+pip install django  # or pip install flask
+pip install pillow  # for image processing
